@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الكنز العربي - علوم الحروف العربية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #e74c3c;
+            --accent: #f1c40f;
+            --text: #2d3436;
+        }
+
+        body {
+            background: linear-gradient(135deg, 
+                rgba(44, 62, 80, 0.95),
+                rgba(231, 76, 60, 0.95)),
+                url('https://picsum.photos/1920/1080?grayscale') fixed;
+            font-family: 'Tajawal', sans-serif;
+            color: white;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--accent);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem;
+        }
+
+        .letter-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .letter-card::before {
+            content: attr(data-letter);
+            position: absolute;
+            font-size: 8rem;
+            opacity: 0.1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+
+        .letter-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .science-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .science-item {
+            margin: 0.5rem 0;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+
+        .science-item:hover {
+            transform: translateX(10px);
+        }
+
+        .science-link {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .science-link i {
+            margin-left: 0.5rem;
+            color: var(--accent);
+        }
+
+        /* تأثيرات خاصة */
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px var(--accent); }
+            50% { box-shadow: 0 0 20px var(--accent); }
+            100% { box-shadow: 0 0 10px var(--accent); }
+        }
+
+        .selected {
+            animation: glow 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-book-open"></i> الكنز العربي - علوم الحروف العربية</h1>
+            <p>اكتشف الأسرار الخفية وراء كل حرف عربي</p>
+        </header>
+
+        <div class="grid" id="lettersGrid"></div>
+    </div>
+
+    <script>
+        const lettersData = [
+            { letter: 'ا', name: 'ألف', sciences: [{name: 'علم التجويد', link: 'https://ar.wikipedia.org/wiki/تجويد'}, {name: 'علم الجُمّل', link: 'https://ar.wikipedia.org/wiki/حساب_الجمل'}, {name: 'علم الأسماء', link: 'https://ar.wikipedia.org/wiki/علم_الأسماء'}], properties: { قيمة: 1, عنصر: 'الهواء', لون: '#2ecc71' }},
+            { letter: 'ب', name: 'باء', sciences: [{name: 'علم الطبائع', link: 'https://ar.wikipedia.org/wiki/طبائع'}, {name: 'أصول الفقه', link: 'https://ar.wikipedia.org/wiki/أصول_الفقه'}, {name: 'علم النحو', link: 'https://ar.wikipedia.org/wiki/نحو_عربي'}], properties: { قيمة: 2, عنصر: 'الماء', لون: '#3498db' }},
+            { letter: 'ت', name: 'تاء', sciences: [{name: 'علم الحديث', link: 'https://ar.wikipedia.org/wiki/علم_الحديث'}, {name: 'القراءات', link: 'https://ar.wikipedia.org/wiki/علم_القراءات'}, {name: 'علم الأوفاق', link: 'https://ar.wikipedia.org/wiki/علم_الأوفاق'}], properties: { قيمة: 400, عنصر: 'النار', لون: '#e74c3c' }},
+            { letter: 'ث', name: 'ثاء', sciences: [{name: 'علم الفلك', link: 'https://ar.wikipedia.org/wiki/فلك'}, {name: 'علم الأعداد', link: 'https://ar.wikipedia.org/wiki/عدد'}, {name: 'علم الأجرام السماوية', link: 'https://ar.wikipedia.org/wiki/جرم_سماوي'}], properties: { قيمة: 3, عنصر: 'الهواء', لون: '#8e44ad' }},
+            { letter: 'ج', name: 'جيم', sciences: [{name: 'علم الجغرافيا', link: 'https://ar.wikipedia.org/wiki/جغرافيا'}, {name: 'علم التاريخ', link: 'https://ar.wikipedia.org/wiki/تاريخ'}, {name: 'علم النفس', link: 'https://ar.wikipedia.org/wiki/علم_النفس'}], properties: { قيمة: 3, عنصر: 'الماء', لون: '#2980b9' }},
+            { letter: 'ح', name: 'حاء', sciences: [{name: 'علم الحياة', link: 'https://ar.wikipedia.org/wiki/حياة'}, {name: 'علم الأحياء', link: 'https://ar.wikipedia.org/wiki/أحياء'}, {name: 'علم الكيمياء', link: 'https://ar.wikipedia.org/wiki/كيمياء'}], properties: { قيمة: 8, عنصر: 'النار', لون: '#c0392b' }},
+            { letter: 'خ', name: 'خاء', sciences: [{name: 'علم الخيمياء', link: 'https://ar.wikipedia.org/wiki/خيمياء'}, {name: 'علم الفلسفة', link: 'https://ar.wikipedia.org/wiki/فلسفة'}, {name: 'علم السحر', link: 'https://ar.wikipedia.org/wiki/سحر'}], properties: { قيمة: 600, عنصر: 'تراب', لون: '#d35400' }},
+            { letter: 'د', name: 'دال', sciences: [{name: 'علم الرياضيات', link: 'https://ar.wikipedia.org/wiki/رياضيات'}, {name: 'علم الهندسة', link: 'https://ar.wikipedia.org/wiki/هندسة'}, {name: 'علم الإحصاء', link: 'https://ar.wikipedia.org/wiki/إحصاء'}], properties: { قيمة: 4, عنصر: 'الماء', لون: '#16a085' }},
+            { letter: 'ذ', name: 'ذال', sciences: [{name: 'علم الذكاء', link: 'https://ar.wikipedia.org/wiki/ذكاء'}, {name: 'علم الحاسوب', link: 'https://ar.wikipedia.org/wiki/حاسوب'}, {name: 'علم المعلومات', link: 'https://ar.wikipedia.org/wiki/معلومات'}], properties: { قيمة: 700, عنصر: 'الهواء', لون: '#f39c12' }},
+            { letter: 'ر', name: 'راء', sciences: [{name: 'علم الرواية', link: 'https://ar.wikipedia.org/wiki/رواية'}, {name: 'علم الأدب', link: 'https://ar.wikipedia.org/wiki/أدب'}, {name: 'علم الفنون', link: 'https://ar.wikipedia.org/wiki/فن'}], properties: { قيمة: 200, عنصر: 'الماء', لون: '#8e44ad' }},
+            { letter: 'ز', name: 'زاي', sciences: [{name: 'علم الزراعة', link: 'https://ar.wikipedia.org/wiki/زراعة'}, {name: 'علم البيئة', link: 'https://ar.wikipedia.org/wiki/بيئة'}, {name: 'علم الغابات', link: 'https://ar.wikipedia.org/wiki/غابة'}], properties: { قيمة: 7, عنصر: 'تراب', لون: '#27ae60' }},
+            { letter: 'س', name: 'سين', sciences: [{name: 'علم السلوك', link: 'https://ar.wikipedia.org/wiki/سلوك'}, {name: 'علم الاجتماع', link: 'https://ar.wikipedia.org/wiki/اجتماع'}, {name: 'علم الثقافة', link: 'https://ar.wikipedia.org/wiki/ثقافة'}], properties: { قيمة: 60, عنصر: 'النار', لون: '#e67e22' }},
+            { letter: 'ش', name: 'شين', sciences: [{name: 'علم الشموس', link: 'https://ar.wikipedia.org/wiki/شمس'}, {name: 'علم الفضاء', link: 'https://ar.wikipedia.org/wiki/فضاء'}, {name: 'علم النجوم', link: 'https://ar.wikipedia.org/wiki/نجوم'}], properties: { قيمة: 300, عنصر: 'الهواء', لون: '#2980b9' }},
+            { letter: 'ص', name: 'صاد', sciences: [{name: 'علم الصيدلة', link: 'https://ar.wikipedia.org/wiki/صيدلة'}, {name: 'علم الطب', link: 'https://ar.wikipedia.org/wiki/طب'}, {name: 'علم الأعشاب', link: 'https://ar.wikipedia.org/wiki/عشب'}], properties: { قيمة: 90, عنصر: 'الماء', لون: '#8e44ad' }},
+            { letter: 'ض', name: 'ضاد', sciences: [{name: 'علم الضياء', link: 'https://ar.wikipedia.org/wiki/ضوء'}, {name: 'علم الطاقة', link: 'https://ar.wikipedia.org/wiki/طاقة'}, {name: 'علم الألوان', link: 'https://ar.wikipedia.org/wiki/لون'}], properties: { قيمة: 800, عنصر: 'النار', لون: '#c0392b' }},
+            { letter: 'ط', name: 'طاء', sciences: [{name: 'علم الطيور', link: 'https://ar.wikipedia.org/wiki/طائر'}, {name: 'علم الحيوانات', link: 'https://ar.wikipedia.org/wiki/حيوان'}, {name: 'علم الطبيعة', link: 'https://ar.wikipedia.org/wiki/طبيعة'}], properties: { قيمة: 9, عنصر: 'تراب', لون: '#d35400' }},
+            { letter: 'ظ', name: 'ظاء', sciences: [{name: 'علم الظواهر', link: 'https://ar.wikipedia.org/wiki/ظاهرة'}, {name: 'علم الغيوم', link: 'https://ar.wikipedia.org/wiki/غيمة'}, {name: 'علم المناخ', link: 'https://ar.wikipedia.org/wiki/مناخ'}], properties: { قيمة: 900, عنصر: 'الهواء', لون: '#f39c12' }},
+            { letter: 'ع', name: 'عين', sciences: [{name: 'علم العيون', link: 'https://ar.wikipedia.org/wiki/عين'}, {name: 'علم البصريات', link: 'https://ar.wikipedia.org/wiki/بصريات'}, {name: 'علم الفنون', link: 'https://ar.wikipedia.org/wiki/فن'}], properties: { قيمة: 70, عنصر: 'الماء', لون: '#16a085' }},
+            { letter: 'غ', name: 'غين', sciences: [{name: 'علم الغيوم', link: 'https://ar.wikipedia.org/wiki/غيمة'}, {name: 'علم الجغرافيا', link: 'https://ar.wikipedia.org/wiki/جغرافيا'}, {name: 'علم الفلك', link: 'https://ar.wikipedia.org/wiki/فلك'}], properties: { قيمة: 1000, عنصر: 'النار', لون: '#c0392b' }},
+            { letter: 'ف', name: 'فاء', sciences: [{name: 'علم الفضاء', link: 'https://ar.wikipedia.org/wiki/فضاء'}, {name: 'علم الفيزياء', link: 'https://ar.wikipedia.org/wiki/فيزياء'}, {name: 'علم الكيمياء', link: 'https://ar.wikipedia.org/wiki/كيمياء'}], properties: { قيمة: 80, عنصر: 'تراب', لون: '#d35400' }},
+            { letter: 'ق', name: 'قاف', sciences: [{name: 'علم القيم', link: 'https://ar.wikipedia.org/wiki/قيمة'}, {name: 'علم القوانين', link: 'https://ar.wikipedia.org/wiki/قانون'}, {name: 'علم الفلسفة', link: 'https://ar.wikipedia.org/wiki/فلسفة'}], properties: { قيمة: 100, عنصر: 'الماء', لون: '#2980b9' }},
+            { letter: 'ك', name: 'كاف', sciences: [{name: 'علم الكواكب', link: 'https://ar.wikipedia.org/wiki/كوكب'}, {name: 'علم الكيمياء', link: 'https://ar.wikipedia.org/wiki/كيمياء'}, {name: 'علم الفلك', link: 'https://ar.wikipedia.org/wiki/فلك'}], properties: { قيمة: 20, عنصر: 'النار', لون: '#e67e22' }},
+            { letter: 'ل', name: 'لام', sciences: [{name: 'علم اللغة', link: 'https://ar.wikipedia.org/wiki/لغة'}, {name: 'علم الأدب', link: 'https://ar.wikipedia.org/wiki/أدب'}, {name: 'علم الفنون', link: 'https://ar.wikipedia.org/wiki/فن'}], properties: { قيمة: 30, عنصر: 'تراب', لون: '#16a085' }},
+            { letter: 'م', name: 'ميم', sciences: [{name: 'علم الميمات', link: 'https://ar.wikipedia.org/wiki/ميم'}, {name: 'علم الرياضيات', link: 'https://ar.wikipedia.org/wiki/رياضيات'}, {name: 'علم الفضاء', link: 'https://ar.wikipedia.org/wiki/فضاء'}], properties: { قيمة: 40, عنصر: 'الماء', لون: '#2980b9' }},
+            { letter: 'ن', name: 'نون', sciences: [{name: 'علم النحو', link: 'https://ar.wikipedia.org/wiki/نحو_عربي'}, {name: 'علم اللغة', link: 'https://ar.wikipedia.org/wiki/لغة'}, {name: 'علم الأدب', link: 'https://ar.wikipedia.org/wiki/أدب'}], properties: { قيمة: 50, عنصر: 'الهواء', لون: '#f39c12' }},
+            { letter: 'هـ', name: 'هاء', sciences: [{name: 'علم الهياكل', link: 'https://ar.wikipedia.org/wiki/هيكل'}, {name: 'علم الأنسجة', link: 'https://ar.wikipedia.org/wiki/نسيج'}, {name: 'علم الأحياء', link: 'https://ar.wikipedia.org/wiki/أحياء'}], properties: { قيمة: 5, عنصر: 'الماء', لون: '#27ae60' }},
+            { letter: 'و', name: 'واو', sciences: [{name: 'علم الوصلات', link: 'https://ar.wikipedia.org/wiki/وصلات'}, {name: 'علم الفضاء', link: 'https://ar.wikipedia.org/wiki/فضاء'}, {name: 'علم الطاقة', link: 'https://ar.wikipedia.org/wiki/طاقة'}], properties: { قيمة: 6, عنصر: 'تراب', لون: '#d35400' }},
+            { letter: 'ي', name: 'ياء', sciences: [{name: 'علم التوازنات الطاقية', link: 'https://ar.wikipedia.org/wiki/توازن_طاقي'}, {name: 'علم الأسرار اللغوية', link: 'https://ar.wikipedia.org/wiki/لغة'}, {name: 'علم النحو', link: 'https://ar.wikipedia.org/wiki/نحو_عربي'}, {name: 'علم الشعر', link: 'https://ar.wikipedia.org/wiki/شعر'}, {name: 'علم الزمن', link: 'https://ar.wikipedia.org/wiki/تقويم'}], properties: { قيمة: 10, عنصر: 'الماء', لون: '#27ae60' }}
+        ];
+
+        const grid = document.getElementById('lettersGrid');
+
+        lettersData.forEach(letter => {
+            const card = document.createElement('div');
+            card.className = 'letter-card';
+            card.dataset.letter = letter.letter;
+            card.innerHTML = `
+                <h2>حرف ${letter.name} (${letter.letter})</h2>
+                <ul class="science-list">
+                    ${letter.sciences.map(science => `
+                        <li class="science-item">
+                            <a href="${science.link}" class="science-link" target="_blank">
+                                <i class="fas fa-book"></i>
+                                ${science.name}
+                            </a>
+                        </li>
+                    `).join('')}
+                </ul>
+                <div class="properties" style="color: ${letter.properties.Loon}">
+                    ${Object.entries(letter.properties).map(([key, val]) => `
+                        <p>${key}: <strong>${val}</strong></p>
+                    `).join('')}
+                </div>
+            `;
+
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.letter-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+            });
+
+            grid.appendChild(card);
+        });
+
+        // تأثيرات تفاعلية
+        document.querySelectorAll('.science-link').forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                link.style.transform = 'scale(1.05)';
+            });
+            
+            link.addEventListener('mouseleave', () => {
+                link.style.transform = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
